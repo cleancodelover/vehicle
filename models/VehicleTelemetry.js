@@ -162,6 +162,10 @@ module.exports = (sequelize, DataTypes) => {
       as: "vehicle",
       foreignKey: "vehicle_id",
     });
+    VehicleTelemetry.hasMany(models.VehicleBoundaryEvent, {
+      as: "boundaryEvents",
+      foreignKey: "vehicle_telemetry_id",
+    });
   };
   return VehicleTelemetry;
 };

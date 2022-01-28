@@ -14,7 +14,7 @@ const buildProdLogger = () => {
     transports: [
       new transports.File({
         level: "error",
-        filename: "../logs/logs.log",
+        filename: "./logs/logs.log",
       }),
     ],
   });

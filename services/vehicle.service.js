@@ -1,9 +1,11 @@
 const db = require("../models");
 const logger = require("../logger/index");
 const Helpers = require("../helpers/helpers.js");
+const VehicleTelemetryService = require("./vehicleTelemetry.service");
 
-class VehicleService {
+class VehicleService extends VehicleTelemetryService {
   constructor() {
+    super();
     this.helper = new Helpers();
   }
 
