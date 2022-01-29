@@ -5,6 +5,9 @@
 ### Installation
 - Clone the repository to your local directory using the command [git clone https://github.com/cleancodelover/shuttlers-api.git]()
 - Open the project in your favorite text editor
+- Add .env file in the project directory and add the following parameters"
+  - APP_PORT=5000
+  - NODE_ENV=development
 - Run "npm install" to install dependencies.
 
 ### To run test
