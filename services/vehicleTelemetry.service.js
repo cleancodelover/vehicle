@@ -147,7 +147,7 @@ class VehicleTelemetryService extends VehicleBoundaryEventService {
       result = result.map((item) => item.get({ plain: true }));
       let timeStamp =
         this.helper.getAverageTime(result) + new Date(futureDate).getTime();
-      let arrivalDate = new Date(timeStamp);
+      let arrivalDate = this.helper.getDateTime(timeStamp);
       return {
         message: "Success.",
         success: true,

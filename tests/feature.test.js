@@ -35,6 +35,6 @@ describe("/GET estimated arrival time, given a future date", () => {
     res.body.should.have.property("message", "Success.");
     res.body.should.have.property("success", true);
     res.body.should.have.property("error", false);
-    res.body.should.have.property("data").not.to.be.null;
+    res.body.should.have.property("data").not.to.be.a("string");
   });
 });

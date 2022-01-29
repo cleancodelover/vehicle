@@ -130,5 +130,13 @@ class Helpers {
     }
     return averageBusStopTimes;
   }
+
+  getDateTime(date) {
+    let newDate = new Date(date);
+    let formattedDate = newDate.toISOString().slice(0, 19).replace("T", " ");
+    let hours = newDate.getHours();
+    let indicator = hours >= 12 ? "PM" : "AM";
+    return `${formattedDate} ${indicator}`;
+  }
 }
 module.exports = Helpers;

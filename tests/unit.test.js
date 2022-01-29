@@ -45,6 +45,6 @@ describe("Check future travel arrival time", () => {
     futureDate.success.should.be.true;
     futureDate.data.should.be.a("object");
     let data = futureDate.data;
-    data.arrivalDate.should.be.a("date");
+    data.arrivalDate.should.be.a("string");
   });
 });
