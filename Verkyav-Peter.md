@@ -1,11 +1,9 @@
 # Interview Test
 
-## Design and implement a node-js service that meets these criterias.
-
-### Solution Description:
+## Solution Description:
 
 ### Installation
-- Clone the repository to your local directory using the command "git clone https://github.com/cleancodelover/shuttlers-api.git"
+- Clone the repository to your local directory using the command [a link]("git clone https://github.com/cleancodelover/shuttlers-api.git")
 - Open the project in your favorite text editor
 - Run "npm install" to install dependencies.
 
@@ -16,8 +14,8 @@
 - Run "nodemon start" to start the server.
 
 ### Endpoints
-- "/vehicle/get-average-travel-time" - is the endpoint to get the average travel time of the vehicle in a month.
-- "/vehicle/get-estimated-arrival-time/:date" is the endpoint to get the estimated arrival time, given a future date. Where, "date" is the future date to commence journey.
+- [a link]("/vehicle/get-average-travel-time") - is the endpoint to get the average travel time of the vehicle in a month.
+- [a link]("/vehicle/get-estimated-arrival-time/:date") is the endpoint to get the estimated arrival time, given a future date. Where, "date" is the future date to commence journey.
 
 ### Project Structure
 - config - contains database configuration file
