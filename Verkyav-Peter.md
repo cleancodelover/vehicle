@@ -14,8 +14,8 @@
 - Run "nodemon start" to start the server.
 
 ### Endpoints
-- [/vehicle/get-average-travel-time] - is the endpoint to get the average travel time of the vehicle in a month.
-- [/vehicle/get-estimated-arrival-time/:date] is the endpoint to get the estimated arrival time, given a future date. Where, "date" is the future date to commence journey.
+- [/vehicle/get-average-travel-time]() - is the endpoint to get the average travel time of the vehicle in a month.
+- [/vehicle/get-estimated-arrival-time/:date]() is the endpoint to get the estimated arrival time, given a future date. Where, "date" is the future date to commence journey.
 
 ### Project Structure
 - config - contains database configuration file
