@@ -4,10 +4,7 @@ const vehicleService = new VehicleService();
 module.exports = {
   //#region Vehicle
   async getVehicleAverageTravelTime(req, res) {
-    let vehicleId = req.params.id;
-    let result = await vehicleService.getVehicleAverageTravelTimeByVehicleId(
-      vehicleId
-    );
+    let result = await vehicleService.getVehicleAverageTravelTime();
     if (result.error) {
       return res.status(500).json(result);
     } else {
@@ -16,14 +13,8 @@ module.exports = {
   },
   async getVehicleEstimatedArrival(req, res) {
     let futureDate = req.params.date;
-    let latitude = req.params.lat;
-    let longitude = req.params.long;
 
-    let result = await vehicleService.getVehicleEstimatedArrivalByPosition(
-      futureDate,
-      latitude,
-      longitude
-    );
+    let result = await vehicleService.getVehicleEstimatedArrival(futureDate);
     if (result.error) {
       return res.status(500).json(result);
     } else {

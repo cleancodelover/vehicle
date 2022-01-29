@@ -7,7 +7,8 @@ class VehicleService extends VehicleTelemetryService {
   constructor() {
     super();
   }
-  //functions are extended from vehicleTelemetry.service.js and vehicleBoundaryEvent.service.js classes.
+  //functions are extended from vehicleTelemetry.service.js
+  //and vehicleBoundaryEvent.service.js classes.
 }
 
 module.exports = VehicleService;

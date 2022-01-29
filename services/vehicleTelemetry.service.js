@@ -1,7 +1,7 @@
 const db = require("../models");
 const logger = require("../logger/index");
 const Helpers = require("../helpers/helpers.js");
-const { Op } = require("sequelize");
+
 const VehicleBoundaryEventService = require("./vehicleBoundaryEvent.service");
 
 class VehicleTelemetryService extends VehicleBoundaryEventService {
@@ -10,18 +10,9 @@ class VehicleTelemetryService extends VehicleBoundaryEventService {
     this.helper = new Helpers();
   }
 
-  async getVehicleTelemetriesByVehicleId(vehicleId) {
-    if (!vehicleId) {
-      return {
-        message: "No telemetries found for this vehicle.",
-        success: false,
-        error: false,
-        data: null,
-      };
-    }
+  async getVehicleTelemetries() {
     try {
       let result = await db.VehicleTelemetry.findAll({
-        where: { vehicle_id: vehicleId },
         attributes: [
           "id",
           "vehicle_id",
@@ -47,7 +38,6 @@ class VehicleTelemetryService extends VehicleBoundaryEventService {
         data: result,
       };
     } catch (error) {
-      console.log(error);
       logger.error(new Error(error));
       return {
         message: "Database error occurred.",
@@ -58,26 +48,25 @@ class VehicleTelemetryService extends VehicleBoundaryEventService {
     }
   }
 
-  async getVehicleAverageTravelTimeByVehicleId(vehicleId) {
-    if (!vehicleId) {
-      return {
-        message: "No telemetries found for this vehicle.",
-        success: false,
-        error: false,
-        data: null,
-      };
-    }
-
+  async getVehicleAverageTravelTime() {
     try {
       let result = await db.VehicleTelemetry.findAll({
-        where: { vehicle_id: vehicleId },
-        attributes: [
-          "id",
-          "vehicle_id",
-          "movement_status",
-          "position_latitude",
-          "position_longitude",
-          "timestamp",
+        attributes: ["id", "vehicle_id", "timestamp"],
+        include: [
+          {
+            model: db.VehicleBoundaryEvent,
+            as: "boundaryEvents",
+            required: false,
+            attributes: ["id", "boundary_id", "detected_event"],
+            include: [
+              {
+                model: db.Boundary,
+                as: "boundary",
+                required: false,
+                attributes: ["id", "name"],
+              },
+            ],
+          },
         ],
       });
       if (!result) {
@@ -89,14 +78,12 @@ class VehicleTelemetryService extends VehicleBoundaryEventService {
         };
       }
       result = result.map((item) => item.get({ plain: true }));
-      let averageTime = this.helper.getAverageTime(result);
+      let averageTime = this.helper.getAverageTravelTime(result);
       return {
         message: "Success.",
         success: true,
         error: false,
-        data: {
-          averageTravelTime: averageTime,
-        },
+        data: averageTime,
       };
     } catch (error) {
       logger.error(new Error(error));
@@ -109,15 +96,7 @@ class VehicleTelemetryService extends VehicleBoundaryEventService {
     }
   }
 
-  async getVehicleEstimatedArrivalByPosition(futureDate, latitude, longitude) {
-    if (!latitude || !longitude) {
-      return {
-        message: "No location found.",
-        success: false,
-        error: false,
-        data: null,
-      };
-    }
+  async getVehicleEstimatedArrival(futureDate) {
     if (!futureDate) {
       return {
         message: "Unable to get arrival time with travel date.",
@@ -129,19 +108,22 @@ class VehicleTelemetryService extends VehicleBoundaryEventService {
 
     try {
       let result = await db.VehicleTelemetry.findAll({
-        where: {
-          [Op.and]: [
-            { position_latitude: latitude },
-            { position_longitude: longitude },
-          ],
-        },
-        attributes: [
-          "id",
-          "vehicle_id",
-          "movement_status",
-          "position_latitude",
-          "position_longitude",
-          "timestamp",
+        attributes: ["id", "vehicle_id", "movement_status", "timestamp"],
+        include: [
+          {
+            model: db.VehicleTelemetryEvent,
+            as: "boundaryEvents",
+            required: false,
+            attributes: ["id", "detected_event", "boundary_id"],
+            include: [
+              {
+                model: db.VehicleBoundaryEvent,
+                as: "boundary",
+                required: false,
+                attributes: ["id", "name"],
+              },
+            ],
+          },
         ],
       });
 

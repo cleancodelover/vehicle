@@ -1,83 +1,129 @@
 class Helpers {
   constructor() {}
+
   getAverageTime(telemetries) {
     if (!telemetries) return 0;
     if (telemetries.length <= 0) return 0;
 
-    let consecutiveWaitings = [];
-    let consecutiveMovements = [];
+    let boundaryEvents = [];
+    let waitingSum = 0;
+    let movementSum = 0;
     let waitingCount = 0;
     let movementCount = 0;
 
-    let tmp = {};
-
-    for (let i = 1; i <= telemetries.length; i++) {
-      if (telemetries[i - 1].movement_status == false) waitingCount++;
-
-      if (telemetries[i - 1].movement_status == true) movementCount++;
-
+    for (let i = 0; i < telemetries.length; i++) {
       if (
-        telemetries[i - 1].movement_status === false &&
-        !Object.keys(tmp).length
+        telemetries[i].boundaryEvents &&
+        telemetries[i].boundaryEvents.length
       ) {
-        tmp.waitingStarts = telemetries[i - 1].timestamp;
-      }
-      if (
-        telemetries[i - 1].movement_status === true &&
-        !Object.keys(tmp).length
-      ) {
-        tmp.movementStarts = telemetries[i - 1].timestamp;
-      }
-      if (!telemetries[i] && telemetries[i - 1].movement_status === true) {
-        tmp.movementEnds = parseInt(telemetries[i - 1].timestamp);
-        consecutiveMovements.push(tmp);
-        tmp = {};
-        break;
-      }
-      if (!telemetries[i] && telemetries[i - 1].movement_status === false) {
-        tmp.waitingEnds = parseInt(telemetries[i - 1].timestamp);
-        consecutiveWaitings.push(tmp);
-        tmp = {};
-        break;
-      }
-      if (
-        telemetries[i - 1].movement_status !== telemetries[i].movement_status &&
-        telemetries[i - 1].movement_status == true &&
-        Object.keys(tmp).length
-      ) {
-        tmp.movementEnds = telemetries[i - 1].timestamp;
-        consecutiveMovements.push(tmp);
-        tmp = {};
-      }
-      if (
-        telemetries[i - 1].movement_status !== telemetries[i].movement_status &&
-        telemetries[i - 1].movement_status === false &&
-        Object.keys(tmp).length
-      ) {
-        tmp.waitingEnds = telemetries[i - 1].timestamp;
-        consecutiveWaitings.push(tmp);
-        tmp = {};
+        let boundaryEvent = telemetries[i].boundaryEvents[0];
+        boundaryEvents.push({
+          event: boundaryEvent,
+          timestamp: telemetries[i].timestamp,
+          boundaryId: boundaryEvent.boundary_id,
+        });
       }
     }
 
-    let totalWaitingTime = 0;
-    for (let i = 0; i < consecutiveWaitings.length; i++) {
-      totalWaitingTime =
-        totalWaitingTime +
-        (parseInt(consecutiveWaitings[i].waitingEnds) -
-          parseInt(consecutiveWaitings[i].waitingStarts));
+    for (let i = 1; i < boundaryEvents.length; i++) {
+      if (boundaryEvents[i].event.detected_event === "exit") {
+        movementCount = movementCount + 1;
+        if (boundaryEvents[i]) {
+          movementSum =
+            movementSum +
+            Math.abs(boundaryEvents[i - 1].timestamp - boundaryEvents[i]);
+        }
+      } else {
+        waitingCount = waitingCount + 1;
+        if (boundaryEvents[i]) {
+          waitingSum =
+            waitingSum +
+            Math.abs(boundaryEvents[i - 1].timestamp - boundaryEvents[i]);
+        }
+      }
     }
 
-    let totalMovementTime = 0;
-    for (let i = 0; i < consecutiveMovements.length; i++) {
-      totalMovementTime =
-        totalMovementTime +
-        (parseInt(consecutiveMovements[i].movementEnds) -
-          parseInt(consecutiveMovements[i].movementStarts));
+    return waitingSum / waitingCount + movementSum / movementCount;
+  }
+
+  getAverageTravelTime(telemetries) {
+    if (!telemetries) return [];
+    if (telemetries.length <= 0) return [];
+
+    let boundaryEvents = [];
+    let enterEvents = [];
+    let exitEvents = [];
+    let averageBusStopTimes = [];
+
+    for (let i = 0; i < telemetries.length; i++) {
+      if (
+        telemetries[i].boundaryEvents &&
+        telemetries[i].boundaryEvents.length
+      ) {
+        let boundaryEvent = telemetries[i].boundaryEvents[0];
+        boundaryEvents.push({
+          event: boundaryEvent,
+          timestamp: telemetries[i].timestamp,
+          boundaryId: boundaryEvent.boundary_id,
+        });
+      }
     }
-    return (
-      totalWaitingTime / waitingCount + totalMovementTime / movementCount ?? 0
-    );
+
+    for (let i = 0; i < boundaryEvents.length; i++) {
+      if (boundaryEvents[i].event.detected_event === "enter") {
+        enterEvents.push(boundaryEvents[i]);
+      } else {
+        exitEvents.push(boundaryEvents[i]);
+      }
+    }
+
+    enterEvents.sort((a, b) => {
+      return a.boundaryId - b.boundaryId;
+    });
+    exitEvents.sort((a, b) => {
+      return a.boundaryId - b.boundaryId;
+    });
+
+    let count = 0;
+    let sum = 0;
+    let dest = 0;
+    for (let i = 0; i < enterEvents.length; i++) {
+      if (
+        exitEvents[i + 1] !== undefined &&
+        enterEvents[i].boundaryId === exitEvents[i + 1].boundaryId
+      ) {
+        if (enterEvents[i].timestamp && exitEvents[i].timestamp) {
+          count = count + 1;
+          sum =
+            sum + Math.abs(enterEvents[i].timestamp - exitEvents[i].timestamp);
+        }
+      } else {
+        if (
+          enterEvents[i] &&
+          exitEvents[i] &&
+          enterEvents[i].timestamp &&
+          exitEvents[i].timestamp
+        ) {
+          count = count + 1;
+          sum =
+            sum + Math.abs(enterEvents[i].timestamp - exitEvents[i].timestamp);
+          let name = "";
+          if (exitEvents[i + 1]) {
+            name = `${enterEvents[dest].event.boundary.name} =/= ${
+              exitEvents[i + 1].event.boundary.name
+            }`;
+          }
+          averageBusStopTimes.push({
+            busStop: name,
+            averageTime: sum / count,
+          });
+          dest = i;
+        }
+        count = 0;
+        sum = 0;
+      }
+    }
+    return averageBusStopTimes;
   }
 }
 module.exports = Helpers;
