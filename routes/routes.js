@@ -5,7 +5,7 @@ router.get(
   imports.getVehicleAverageTravelTime
 );
 router.get(
-  "/vehicle/get-estimated-arrival-time",
+  "/vehicle/get-estimated-arrival-time/:date",
   imports.getVehicleEstimatedArrival
 );
 

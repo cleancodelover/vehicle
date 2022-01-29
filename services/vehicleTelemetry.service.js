@@ -13,13 +13,22 @@ class VehicleTelemetryService extends VehicleBoundaryEventService {
   async getVehicleTelemetries() {
     try {
       let result = await db.VehicleTelemetry.findAll({
-        attributes: [
-          "id",
-          "vehicle_id",
-          "movement_status",
-          "position_latitude",
-          "position_longitude",
-          "timestamp",
+        attributes: ["id", "vehicle_id", "timestamp"],
+        include: [
+          {
+            model: db.VehicleBoundaryEvent,
+            as: "boundaryEvents",
+            required: false,
+            attributes: ["id", "boundary_id", "detected_event"],
+            include: [
+              {
+                model: db.Boundary,
+                as: "boundary",
+                required: false,
+                attributes: ["id", "name"],
+              },
+            ],
+          },
         ],
       });
       if (!result) {
@@ -108,16 +117,16 @@ class VehicleTelemetryService extends VehicleBoundaryEventService {
 
     try {
       let result = await db.VehicleTelemetry.findAll({
-        attributes: ["id", "vehicle_id", "movement_status", "timestamp"],
+        attributes: ["id", "vehicle_id", "timestamp"],
         include: [
           {
-            model: db.VehicleTelemetryEvent,
+            model: db.VehicleBoundaryEvent,
             as: "boundaryEvents",
             required: false,
-            attributes: ["id", "detected_event", "boundary_id"],
+            attributes: ["id", "boundary_id", "detected_event"],
             include: [
               {
-                model: db.VehicleBoundaryEvent,
+                model: db.Boundary,
                 as: "boundary",
                 required: false,
                 attributes: ["id", "name"],

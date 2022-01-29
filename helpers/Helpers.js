@@ -29,20 +29,25 @@ class Helpers {
       if (boundaryEvents[i].event.detected_event === "exit") {
         movementCount = movementCount + 1;
         if (boundaryEvents[i]) {
-          movementSum =
+          movementSum = parseInt(
             movementSum +
-            Math.abs(boundaryEvents[i - 1].timestamp - boundaryEvents[i]);
+              Math.abs(
+                boundaryEvents[i - 1].timestamp - boundaryEvents[i].timestamp
+              )
+          );
         }
       } else {
         waitingCount = waitingCount + 1;
         if (boundaryEvents[i]) {
-          waitingSum =
+          waitingSum = parseInt(
             waitingSum +
-            Math.abs(boundaryEvents[i - 1].timestamp - boundaryEvents[i]);
+              Math.abs(
+                boundaryEvents[i - 1].timestamp - boundaryEvents[i].timestamp
+              )
+          );
         }
       }
     }
-
     return waitingSum / waitingCount + movementSum / movementCount;
   }
 
