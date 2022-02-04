@@ -4,8 +4,6 @@ class VehicleController {
     this.db = db;
     this.helper = helper;
     this.logger = logger;
-    this.factory = factory;
-
     this.vehicleService = Factory.vehicleService(
       this.db,
       this.helper,
