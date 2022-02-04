@@ -1,11 +1,12 @@
+const Factory = require("../dic/factory");
 class VehicleController {
-  constructor(db, helper, logger, factory) {
+  constructor(db, helper, logger) {
     this.db = db;
     this.helper = helper;
     this.logger = logger;
     this.factory = factory;
 
-    this.vehicleService = factory.vehicleService(
+    this.vehicleService = Factory.vehicleService(
       this.db,
       this.helper,
       this.logger
