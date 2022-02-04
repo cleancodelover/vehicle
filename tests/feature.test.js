@@ -8,9 +8,7 @@ chai.use(chaiHttp);
 
 describe("/GET Average travel time in a month", () => {
   it("it should get a vehicle's average travel time within a month", async () => {
-    let res = await chai
-      .request(server)
-      .get(`/vehicle/get-average-travel-time`);
+    let res = await chai.request(server).get(`/vehicles/average-travel-time`);
 
     res.should.have.status(200);
     res.body.should.be.a("object");
@@ -29,7 +27,7 @@ describe("/GET estimated arrival time, given a future date", () => {
     };
     let res = await chai
       .request(server)
-      .get(`/vehicle/get-estimated-arrival-time/${obj.date}`);
+      .get(`/vehicles/estimated-arrival-time/${obj.date}`);
     res.should.have.status(200);
     res.body.should.be.a("object");
     res.body.should.have.property("message", "Success.");

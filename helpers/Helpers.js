@@ -1,6 +1,4 @@
 class Helpers {
-  constructor() {}
-
   getAverageTime(telemetries) {
     if (!telemetries) return 0;
     if (telemetries.length <= 0) return 0;

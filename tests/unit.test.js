@@ -1,11 +1,12 @@
 process.env.NODE_ENV = "test";
 const chai = require("chai");
-const VehicleService = require("../services/vehicle.service");
-const Helpers = require("../helpers/Helpers");
+const db = require("../models");
+const logger = require("../logger");
+const Factory = require("../dic/factory");
 
 describe("Check Average travel time in a month", () => {
-  const vehicleService = new VehicleService();
-  const helpers = new Helpers();
+  const vehicleService = Factory.vehicleService(db, Factory.helper(), logger);
+  const helpers = Factory.helper();
 
   it("check if the average time is computed.", async () => {
     let telemetries = await vehicleService.getVehicleTelemetries();
@@ -32,7 +33,7 @@ describe("Check Average travel time in a month", () => {
 });
 
 describe("Check future travel arrival time", () => {
-  const vehicleService = new VehicleService();
+  const vehicleService = Factory.vehicleService(db, Factory.helper(), logger);
   let obj = {
     date: "2022-02-05 09:32:21",
   };

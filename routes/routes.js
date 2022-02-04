@@ -1,12 +1,13 @@
 const router = require("express").Router();
-const imports = require("./imports");
+const Factory = require("../dic/factory");
+const vehicleController = Factory.vehicleController();
 router.get(
-  "/vehicle/get-average-travel-time",
-  imports.getVehicleAverageTravelTime
+  "/vehicles/average-travel-time",
+  vehicleController.getVehicleAverageTravelTime
 );
 router.get(
-  "/vehicle/get-estimated-arrival-time/:date",
-  imports.getVehicleEstimatedArrival
+  "/vehicles/estimated-arrival-time/:date",
+  vehicleController.getVehicleEstimatedArrival
 );
 
 module.exports = router;

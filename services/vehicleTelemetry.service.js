@@ -1,13 +1,10 @@
-const db = require("../models");
-const logger = require("../logger/index");
-const Helpers = require("../helpers/helpers.js");
-
 const VehicleBoundaryEventService = require("./vehicleBoundaryEvent.service");
-
 class VehicleTelemetryService extends VehicleBoundaryEventService {
-  constructor() {
-    super();
-    this.helper = new Helpers();
+  constructor(db, helper, logger) {
+    super(db, helper, logger);
+    this.helper = helper;
+    this.db = db;
+    this.logger = logger;
   }
 
   async getVehicleTelemetries() {

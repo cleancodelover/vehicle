@@ -1,10 +1,8 @@
-const db = require("../models");
-const logger = require("../logger/index");
-const Helpers = require("../helpers/helpers.js");
-
 class VehicleBoundaryEventService {
-  constructor() {
-    this.helper = new Helpers();
+  constructor(db, helper, logger) {
+    this.helper = helper;
+    this.db = db;
+    this.logger = logger;
   }
 
   async getVehicleBoundaryEventsByVehicleId(vehicleId) {
